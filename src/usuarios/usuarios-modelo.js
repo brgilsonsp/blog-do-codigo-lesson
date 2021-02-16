@@ -67,6 +67,26 @@ class Usuario {
 
     return bcrypt.hash(senha, custoHash);
   }
+
+  /**
+   * Valida se o usuário esta cadastrado e se a senha informada é a senha cadastrada
+   * 
+   * @param usuario Usuario 
+   * @param senha Senha informado pelo usuário
+   * 
+   * @throws InvalidArgumentError caso usuário cadastradi && senha válida
+   * 
+   * @returns void
+   */
+  static async ehUmUsuarioValido(usuario, senha) {
+    const message = 'Usuário ou senha inválidos';
+    if(!usuario)
+        throw new InvalidArgumentError(message);
+
+    const senhaValida = await bcrypt.compare(senha, usuario.senhaHash);
+    if(!senhaValida)
+        throw new InvalidArgumentError(message);
+  }
 }
 
 module.exports = Usuario;
