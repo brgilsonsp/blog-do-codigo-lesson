@@ -11,7 +11,7 @@ function criaTokenJwt(usuario){
     ]
   };
 
-  const senhaSecretaServer = '123456789';
+  const senhaSecretaServer = process.env.CHAVE_JWT;
   return jwt.sign(payload, senhaSecretaServer);
 }
 
