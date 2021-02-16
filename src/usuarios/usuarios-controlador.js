@@ -1,5 +1,19 @@
+const jwt = require('jsonwebtoken');
 const Usuario = require('./usuarios-modelo');
 const { InvalidArgumentError, InternalServerError } = require('../erros');
+
+//Precisamos criar apenas o payload pois o cabeçalho é criado pela API
+function criaTokenJwt(usuario){
+  const payload = {
+    id: usuario.id,
+    claims: [
+      'admin', 'financial', 'developer'
+    ]
+  };
+
+  const senhaSecretaServer = '123456789';
+  return jwt.sign(payload, senhaSecretaServer);
+}
 
 module.exports = {
   adiciona: async (req, res) => {
@@ -28,6 +42,9 @@ module.exports = {
   },
 
   login: (req, res) => {
+    //O atributo user do objeto req é injetado no final do Passport, no done
+    const tokenJwt = criaTokenJwt(req.user);
+    res.set('Authorization', tokenJwt);
     res.status(204).send();
   },
 
