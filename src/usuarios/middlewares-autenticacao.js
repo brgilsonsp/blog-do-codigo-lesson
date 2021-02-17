@@ -29,6 +29,9 @@ module.exports = {
                 if(error && error.name === 'JsonWebTokenError'){
                     return res.status(401).json( { error: 'Token inválido' } );
                 }
+                if(error && error.name === 'TokenExpiredError'){
+                    return res.status(401).json( { error: 'Token expirado' } );
+                }
                 if(error){
                     return res.status(500).json( { error: 'Ops, aconteeu algo incorreto' } );
                 }                

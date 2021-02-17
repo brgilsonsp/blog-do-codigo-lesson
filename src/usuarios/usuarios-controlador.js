@@ -12,7 +12,8 @@ function criaTokenJwt(usuario){
   };
 
   const senhaSecretaServer = process.env.CHAVE_JWT;
-  return jwt.sign(payload, senhaSecretaServer);
+  const expireLimit = process.env.EXPIRE_TOKEN_TIME || '5m';
+  return jwt.sign(payload, senhaSecretaServer, { expiresIn: expireLimit });
 }
 
 module.exports = {
@@ -45,7 +46,7 @@ module.exports = {
     //O atributo user do objeto req é injetado no final do Passport, no done
     const tokenJwt = criaTokenJwt(req.user);
     res.set('Authorization', tokenJwt);
-    res.status(204).send();
+    res.status(201).json( {token: tokenJwt});
   },
 
   lista: async (req, res) => {
