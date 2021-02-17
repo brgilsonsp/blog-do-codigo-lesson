@@ -56,10 +56,13 @@ module.exports = {
   deleta: async (req, res) => {
     const usuario = await Usuario.buscaPorId(req.params.id);
     try {
+      if(!usuario){
+        return res.status(400).json( { erro: 'Usuário não encontrado'})
+      }
       await usuario.deleta();
       res.status(200).send();
     } catch (erro) {
-      res.status(500).json({ erro: erro });
+      res.status(500).json({ erro: erro.message });
     }
   }
 };
