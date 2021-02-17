@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Usuario = require('./usuarios-modelo');
+const { adicionaToken } = require('../../redis/manipula-blacklist');
+
 const { InvalidArgumentError, InternalServerError } = require('../erros');
 
 //Precisamos criar apenas o payload pois o cabeçalho é criado pela API
@@ -47,6 +49,12 @@ module.exports = {
     const tokenJwt = criaTokenJwt(req.user);
     res.set('Authorization', tokenJwt);
     res.status(201).json( {token: tokenJwt});
+  },
+
+  logout: (req, res) => {
+    const token = req.token;
+    adicionaToken(token);
+    res.status(204).send();
   },
 
   lista: async (req, res) => {
