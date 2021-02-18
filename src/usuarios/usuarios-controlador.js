@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const moment = require('moment');
 const Usuario = require('./usuarios-modelo');
 const { adicionaToken } = require('../../redis/manipula-blacklist');
 
@@ -16,6 +18,14 @@ function criaTokenJwt(usuario){
   const senhaSecretaServer = process.env.CHAVE_JWT;
   const expireLimit = process.env.EXPIRE_TOKEN_TIME || '5m';
   return jwt.sign(payload, senhaSecretaServer, { expiresIn: expireLimit });
+}
+
+function criaTokenOpaco(usuario){
+  const sizeBytes = parseInt(process.env.SIZE_BYTES_REFRESH_TOKEN || 25);
+  const minutosExpiracao = parseInt(process.env.MINUTES_TO_EXPIRE_REFRESH_TOKEN || 7200);
+  const dataExpiracao = moment().add(minutosExpiracao, 'm').unix();
+
+  return crypto.randomBytes(sizeBytes).toString('hex');
 }
 
 module.exports = {
@@ -46,9 +56,10 @@ module.exports = {
 
   login: (req, res) => {
     //O atributo user do objeto req é injetado no final do Passport, no done
-    const tokenJwt = criaTokenJwt(req.user);
-    res.set('Authorization', tokenJwt);
-    res.status(201).json( {token: tokenJwt});
+    const access_token = criaTokenJwt(req.user);
+    const refresh_token = criaTokenOpaco(req.user);
+    const bodyResponse = { access_token, refresh_token };
+    res.status(201).json(bodyResponse);
   },
 
   logout: (req, res) => {
