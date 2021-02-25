@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const LocalStrategy = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const Usuario = require('./usuarios-modelo');
-const blacklist = require('../../redis/manipula-blacklist');
+const blacklist = require('../../redis/manipula-blocked-list-refresh-token');
 
 async function validaTokenExpirado(token) {
     const tokenNaBlackList = await blacklist.contemToken(token);

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const moment = require('moment');
 const Usuario = require('./usuarios-modelo');
-const { adicionaToken } = require('../../redis/manipula-blacklist');
+const { adicionaToken } = require('../../redis/manipula-blocked-list-refresh-token');
 
 const { InvalidArgumentError, InternalServerError } = require('../erros');
 

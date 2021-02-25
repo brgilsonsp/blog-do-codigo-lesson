@@ -1,7 +1,6 @@
 require('dotenv').config();
 const app = require('./app');
-require('./redis/blacklist');
-const db = require('./database');
+require('./database');
 const routes = require('./rotas');
 
 const port = process.env.PORT_SERVER || 3100;
